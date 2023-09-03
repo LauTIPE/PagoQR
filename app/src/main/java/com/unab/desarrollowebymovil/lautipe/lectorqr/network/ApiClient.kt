@@ -9,7 +9,7 @@ object ApiClient {
     fun getClient(): Retrofit {
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
-                .baseUrl("http://your-api-url-here/")  // Reemplace con la URL base de su API
+                .baseUrl("http://localhost:8080/api/pagos")  // Reemplace con la URL base de su API
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }

@@ -1,7 +1,10 @@
+
 package com.unab.desarrollowebymovil.lautipe.lectorqr
 
+import android.content.Intent
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,38 +20,54 @@ class PayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pay)
 
-        // Inicializar Retrofit
+        // Initialize buttons
+        val approveButton: Button = findViewById(R.id.button4)
+        val rejectButton: Button = findViewById(R.id.button5)
+
+        // Initialize Retrofit
         val api = ApiClient.getClient().create(ApiInterface::class.java)
 
-        // Obtener el resultado del escaneo desde el Intent
+        // Get the scan result from the Intent
         val scanResult: String? = intent.getStringExtra("SCAN_RESULT")
 
-        // Identificar los TextViews para mostrar los datos
+        // Identify the TextViews to display data
         val transactionTextView: TextView = findViewById(R.id.textView10)
         val amountTextView: TextView = findViewById(R.id.textView9)
         val dateTextView: TextView = findViewById(R.id.textView8)
 
-        // Realizar la llamada a la API para obtener los detalles del pago
+        // Make the API call to get payment details
         api.getPaymentInfo(scanResult).enqueue(object : Callback<PaymentInfo> {
 
             @SuppressLint("SetTextI18n")
             override fun onResponse(call: Call<PaymentInfo>, response: Response<PaymentInfo>) {
                 if (response.isSuccessful) {
                     val paymentInfo = response.body()
-                    // Actualizar los TextViews con los datos recibidos
+                    // Update the TextViews with the received data
                     transactionTextView.text = "Nro. transacción: ${paymentInfo?.idTrx}"
                     amountTextView.text = "Monto: ${paymentInfo?.monto}"
                     dateTextView.text = "Fecha: ${paymentInfo?.fecha}"
                 } else {
-                    // Manejar error
+                    // Handle error
                     Toast.makeText(this@PayActivity, "Error al obtener los detalles", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<PaymentInfo>, t: Throwable) {
-                // Manejar falla en la red u otro error
+                // Handle network failure or other error
                 Toast.makeText(this@PayActivity, "Fallo en la conexión", Toast.LENGTH_SHORT).show()
             }
         })
+
+        // Set click listener for the approve button
+        approveButton.setOnClickListener {
+            val intent = Intent(this, PaymentConfirmationActivity::class.java)
+            startActivity(intent)
+        }
+
+        // Set click listener for the reject button
+        rejectButton.setOnClickListener {
+            val intent = Intent(this, PaymentRejectionActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

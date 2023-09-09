@@ -7,9 +7,10 @@ object ApiClient {
     private var retrofit: Retrofit? = null
 
     fun getClient(): Retrofit {
+//        TODO("CAMBIAR URL APICLIENT POR URL IPv4 DE SU PROPIO EQUIPO")
         if (retrofit == null) {
             retrofit = Retrofit.Builder()
-                .baseUrl("http://192.168.2.105:8080/api/pagos/")
+                .baseUrl("http://192.168.2.102:8080/api/pagos/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }

@@ -56,12 +56,11 @@ class MainActivity : AppCompatActivity() {
                     val call = api.getPaymentInfo(scannedId)
 
                     call.enqueue(object : Callback<PaymentInfo> {
-                        override fun onResponse(
-                            call: Call<PaymentInfo>,
-                            response: Response<PaymentInfo>
-                        ) {
+                        override fun onResponse(call: Call<PaymentInfo>, response: Response<PaymentInfo>) {
                             if (response.isSuccessful) {
+                                val paymentInfo = response.body();
                                 val intent = Intent(this@MainActivity, PayActivity::class.java)
+                                intent.putExtra("paymentInfo", paymentInfo)
                                 startActivity(intent)
                             }
                         }
